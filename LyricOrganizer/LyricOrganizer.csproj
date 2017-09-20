@@ -83,8 +83,8 @@
     </Compile>
     <Compile Include="Data\LyricContent.cs" />
     <Compile Include="Data\LyricItem.cs" />
-    <Compile Include="Generators\ILyricWriter.cs" />
-    <Compile Include="Generators\TextLyricWriter.cs" />
+    <Compile Include="Writers\ILyricWriter.cs" />
+    <Compile Include="Writers\TextLyricWriter.cs" />
     <Compile Include="Helpers\Routines.cs" />
     <Compile Include="Helpers\Commands.cs" />
     <Compile Include="Providers\ILyricProvider.cs" />
