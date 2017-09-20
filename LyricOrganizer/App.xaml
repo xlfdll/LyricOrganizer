@@ -1,0 +1,16 @@
+﻿<Application x:Class="LyricOrganizer.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             StartupUri="pack://application:,,,/MainWindow.xaml">
+
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Resources/Icons.LyricOrganizer.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/Resources/Styles.App.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/Resources/Styles.StatusBar.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
+
+</Application>

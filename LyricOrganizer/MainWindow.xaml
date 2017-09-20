@@ -1,0 +1,171 @@
+﻿<Window x:Class="LyricOrganizer.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:LyricOrganizer"
+        Title="Lyric Organizer" Icon="pack://application:,,,/LyricOrganizer.ico"
+        Width="800" Height="600" WindowStartupLocation="CenterScreen"
+        FocusManager.FocusedElement="{Binding ElementName=KeywordTextBox}"
+        Loaded="MainWindow_Loaded">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0">
+            <Grid.Resources>
+                <Style TargetType="Grid">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Path=IsBusy}" Value="True">
+                            <Setter Property="IsEnabled" Value="False"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+                <Style TargetType="ComboBox">
+                    <Setter Property="VerticalContentAlignment" Value="Center"/>
+                    <Setter Property="Margin" Value="3"/>
+                </Style>
+                <Style TargetType="TextBox">
+                    <Setter Property="VerticalContentAlignment" Value="Center"/>
+                    <Setter Property="Margin" Value="3"/>
+                </Style>
+                <Style TargetType="Button" BasedOn="{StaticResource ModernButtonStyle}">
+                    <Setter Property="Margin" Value="5"/>
+                </Style>
+                <Style TargetType="Image">
+                    <Setter Property="Width" Value="16"/>
+                </Style>
+            </Grid.Resources>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="125"/>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <ComboBox Grid.Column="0" SelectedIndex="{Binding Path=TypeIndex}">
+                <ComboBoxItem Content="By Song Name"/>
+                <ComboBoxItem Content="By Artist"/>
+                <ComboBoxItem Content="By Lyric"/>
+            </ComboBox>
+            <TextBox x:Name="KeywordTextBox" Grid.Column="1" Text="{Binding Path=Keyword, UpdateSourceTrigger=PropertyChanged}">
+                <TextBox.InputBindings>
+                    <KeyBinding Command="{x:Static local:Commands.SearchCommand}"
+                                CommandParameter="0"
+                                Key="Return"/>
+                </TextBox.InputBindings>
+            </TextBox>
+            <Button Grid.Column="2"
+                    Command="{x:Static local:Commands.SearchCommand}"
+                    CommandParameter="0">
+                <Image Source="{StaticResource SearchIcon}"/>
+            </Button>
+        </Grid>
+
+        <DockPanel Grid.Row="1" LastChildFill="True">
+            <DockPanel.Resources>
+                <Style TargetType="DockPanel">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Path=IsBusy}" Value="True">
+                            <Setter Property="IsEnabled" Value="False"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </DockPanel.Resources>
+
+            <Grid DockPanel.Dock="Bottom">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0" Orientation="Horizontal">
+                    <StackPanel.Style>
+                        <Style TargetType="StackPanel">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Path=Results.Count}" Value="0">
+                                    <Setter Property="Visibility" Value="Hidden"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </StackPanel.Style>
+
+                    <Button Content="_Previous Page"
+                            Command="{x:Static local:Commands.SearchCommand}"
+                            CommandParameter="-1">
+                        <Button.Style>
+                            <Style TargetType="Button" BasedOn="{StaticResource ModernButtonStyle}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=Page}" Value="1">
+                                        <Setter Property="IsEnabled" Value="False"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+
+                                <Setter Property="Margin" Value="5"/>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+
+                    <TextBlock Text="{Binding Path=Page}" VerticalAlignment="Center"/>
+
+                    <Button Content="_Next Page"
+                            Command="{x:Static local:Commands.SearchCommand}"
+                            CommandParameter="1">
+                        <Button.Style>
+                            <Style TargetType="Button" BasedOn="{StaticResource ModernButtonStyle}">
+                                <Setter Property="Margin" Value="5"/>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                </StackPanel>
+
+                <Button Grid.Column="1" Content="_Generate Lyric Document"
+                        Command="{x:Static local:Commands.GenerateDocumentCommand}"
+                        CommandParameter="{Binding Path=CurrentItem}">
+                    <Button.Resources>
+                        <Style TargetType="Button" BasedOn="{StaticResource ModernButtonStyle}">
+                            <Setter Property="HorizontalAlignment" Value="Right"/>
+                            <Setter Property="Margin" Value="5"/>
+                            <Setter Property="Padding" Value="5"/>
+                        </Style>
+                    </Button.Resources>
+                </Button>
+            </Grid>
+
+            <ListView ItemsSource="{Binding Path=Results}" SelectedItem="{Binding Path=CurrentItem}" SelectionMode="Single">
+                <ListView.ContextMenu>
+                    <ContextMenu DataContext="{Binding Path=PlacementTarget, RelativeSource={RelativeSource Self}}">
+                        <MenuItem Header="_Open Lyric URL"
+                                  Command="{x:Static local:Commands.OpenLyricURLCommand}"
+                                  CommandParameter="{Binding Path=SelectedItem}"/>
+                    </ContextMenu>
+                </ListView.ContextMenu>
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn>
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Image Source="{StaticResource LyricIcon}"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="Song Name" DisplayMemberBinding="{Binding Path=SongTitle}"/>
+                        <GridViewColumn Header="Song Artist" DisplayMemberBinding="{Binding Path=SongArtist}"/>
+                        <GridViewColumn Header="Provider" DisplayMemberBinding="{Binding Path=Provider.Name}"/>
+                        <GridViewColumn Header="URL" DisplayMemberBinding="{Binding Path=URI}"/>
+                    </GridView>
+                </ListView.View>
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <EventSetter Event="MouseDoubleClick" Handler="ListViewItem_MouseDoubleClick"/>
+                    </Style>
+                </ListView.ItemContainerStyle>
+            </ListView>
+        </DockPanel>
+
+        <StatusBar Grid.Row="2" Style="{StaticResource ModernStatusBarStyle}">
+            <TextBlock Text="{Binding Path=Status}"/>
+        </StatusBar>
+    </Grid>
+</Window>
