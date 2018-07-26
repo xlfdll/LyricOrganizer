@@ -65,16 +65,16 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Compile Include="..\..\XDLibrary\Xlfdll.Core\Infrastructure\Collections\EnumerableExtensions.cs">
+    <Compile Include="..\XDLibrary\Xlfdll.Core\Infrastructure\Collections\EnumerableExtensions.cs">
       <Link>Base\EnumerableExtensions.cs</Link>
     </Compile>
-    <Compile Include="..\..\XDLibrary\Xlfdll.Core\Infrastructure\ObservableObject.cs">
+    <Compile Include="..\XDLibrary\Xlfdll.Core\Infrastructure\ObservableObject.cs">
       <Link>Base\ObservableObject.cs</Link>
     </Compile>
-    <Compile Include="..\..\XDLibrary\Xlfdll.Core\Network\WebOperations.cs">
+    <Compile Include="..\XDLibrary\Xlfdll.Core\Network\WebOperations.cs">
       <Link>Base\Network\WebOperations.cs</Link>
     </Compile>
-    <Compile Include="..\..\XDLibrary\Xlfdll.Windows.Presentation\RelayCommand.cs">
+    <Compile Include="..\XDLibrary\Xlfdll.Windows.Presentation\RelayCommand.cs">
       <Link>Base\Windows\Presentation\RelayCommand.cs</Link>
     </Compile>
     <Compile Include="App.xaml.cs">
