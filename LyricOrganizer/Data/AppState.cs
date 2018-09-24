@@ -70,6 +70,8 @@ namespace LyricOrganizer
 
         #endregion
 
+        public String ActiveKeyword { get; set; }
+
         public ObservableCollection<LyricItem> Results { get; }
         public ObservableCollection<ILyricProvider> Providers { get; }
 

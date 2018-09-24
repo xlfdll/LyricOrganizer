@@ -33,7 +33,7 @@ namespace LyricOrganizer
             {
                 worker.ReportProgress(0, provider.Name);
 
-                results.AddRange(provider.Search(AppState.Current.Keyword, (LyricSearchType)AppState.Current.TypeIndex, page));
+                results.AddRange(provider.Search(AppState.Current.ActiveKeyword, (LyricSearchType)AppState.Current.TypeIndex, page));
             }
 
             e.Result = new Object[] { results, page };

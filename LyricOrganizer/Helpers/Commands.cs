@@ -20,7 +20,12 @@ namespace LyricOrganizer
 
                     if (Int32.Parse(direction) == 0)
                     {
+                        AppState.Current.ActiveKeyword = AppState.Current.Keyword;
                         AppState.Current.Page = 1;
+                    }
+                    else
+                    {
+                        AppState.Current.Keyword = AppState.Current.ActiveKeyword;
                     }
 
                     using (BackgroundWorker worker = new BackgroundWorker() { WorkerReportsProgress = true })
