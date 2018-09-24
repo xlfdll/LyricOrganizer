@@ -3,113 +3,122 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
-using System.Text;
 using System.Windows;
 
 namespace LyricOrganizer
 {
-	public static class Routines
-	{
-		public static void Search_DoWork(object sender, DoWorkEventArgs e)
-		{
-			BackgroundWorker worker = sender as BackgroundWorker;
-			Int32 direction = Int32.Parse(e.Argument.ToString());
-			List<LyricItem> results = new List<LyricItem>();
-			Int32? page = AppState.Current.Page;
+    public static class Routines
+    {
+        public static void Search_DoWork(object sender, DoWorkEventArgs e)
+        {
+            BackgroundWorker worker = sender as BackgroundWorker;
+            Int32 direction = Int32.Parse(e.Argument.ToString());
+            List<LyricItem> results = new List<LyricItem>();
+            Int32? page = AppState.Current.Page;
 
-			switch (direction)
-			{
-				case -1:
-					page--;
-					break;
-				case 1:
-					page++;
-					break;
-				default:
-					page = null;
-					break;
-			}
+            switch (direction)
+            {
+                case -1:
+                    page--;
+                    break;
+                case 1:
+                    page++;
+                    break;
+                default:
+                    page = null;
+                    break;
+            }
 
-			foreach (ILyricProvider provider in AppState.Current.Providers)
-			{
-				worker.ReportProgress(0, provider.Name);
+            foreach (ILyricProvider provider in AppState.Current.Providers)
+            {
+                worker.ReportProgress(0, provider.Name);
 
-				results.AddRange(provider.Search(AppState.Current.Keyword, (LyricSearchType)AppState.Current.TypeIndex, page));
-			}
+                results.AddRange(provider.Search(AppState.Current.Keyword, (LyricSearchType)AppState.Current.TypeIndex, page));
+            }
 
-			e.Result = new Object[] { results, page };
-		}
+            e.Result = new Object[] { results, page };
+        }
 
-		public static void Search_ProgressChanged(object sender, ProgressChangedEventArgs e)
-		{
-			AppState.Current.Status = "Getting results from " + e.UserState.ToString() + " ...";
-		}
+        public static void Search_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            AppState.Current.Status = "Getting results from " + e.UserState.ToString() + " ...";
+        }
 
-		public static void Search_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-		{
-			Object[] results = e.Result as Object[];
-			List<LyricItem> lyricItems = results[0] as List<LyricItem>;
-			Int32? page = results[1] as Int32?;
+        public static void Search_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            Object[] results = e.Result as Object[];
+            List<LyricItem> lyricItems = results[0] as List<LyricItem>;
 
-			AppState.Current.Page = page != null ? (Int32)page : 1;
+            if (lyricItems.Count > 0)
+            {
+                Int32? page = results[1] as Int32?;
 
-			foreach (LyricItem item in lyricItems)
-			{
-				AppState.Current.Results.Add(item);
-			}
+                AppState.Current.Page = page != null ? (Int32)page : 1;
+                AppState.Current.Results.Clear();
 
-			AppState.Current.Status = "Found " + lyricItems.Count.ToString() + " item(s)";
-			AppState.Current.IsBusy = false;
-		}
+                foreach (LyricItem item in lyricItems)
+                {
+                    AppState.Current.Results.Add(item);
+                }
 
-		public static void Generate_DoWork(object sender, DoWorkEventArgs e)
-		{
-			BackgroundWorker worker = sender as BackgroundWorker;
-			Object[] arguments = e.Argument as Object[];
-			LyricItem item = arguments[0] as LyricItem;
-			String fileName = arguments[1] as String;
+                AppState.Current.Status = "Found " + lyricItems.Count.ToString() + " item(s)";
+            }
+            else
+            {
+                AppState.Current.Status = "No items found";
+            }
 
-			worker.ReportProgress(0, item.Provider.Name);
+            AppState.Current.IsBusy = false;
+        }
 
-			LyricContent lyricContent = item.Provider.Retrieve(item);
+        public static void Generate_DoWork(object sender, DoWorkEventArgs e)
+        {
+            BackgroundWorker worker = sender as BackgroundWorker;
+            Object[] arguments = e.Argument as Object[];
+            LyricItem item = arguments[0] as LyricItem;
+            String fileName = arguments[1] as String;
 
-			switch (Path.GetExtension(fileName))
-			{
-				case ".txt":
-					TextLyricWriter writer = new TextLyricWriter(lyricContent);
+            worker.ReportProgress(0, item.Provider.Name);
 
-					writer.WriteTo(fileName);
+            LyricContent lyricContent = item.Provider.Retrieve(item);
 
-					break;
-				default:
-					break;
-			}
+            switch (Path.GetExtension(fileName))
+            {
+                case ".txt":
+                    TextLyricWriter writer = new TextLyricWriter(lyricContent);
 
-			e.Result = fileName;
-		}
+                    writer.WriteTo(fileName);
 
-		public static void Generate_ProgressChanged(object sender, ProgressChangedEventArgs e)
-		{
-			AppState.Current.Status = "Generating lyric document from " + e.UserState.ToString() + " ...";
-		}
+                    break;
+                default:
+                    break;
+            }
 
-		public static void Generate_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-		{
-			String fileName = e.Result.ToString();
+            e.Result = fileName;
+        }
 
-			AppState.Current.Status = "Done";
+        public static void Generate_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            AppState.Current.Status = "Generating lyric document from " + e.UserState.ToString() + " ...";
+        }
 
-			if (MessageBox.Show(Application.Current.MainWindow,
-				String.Format("Lyric document has been generated:{0}{0}{1}{0}{0}Do you want to open it?",
-					Environment.NewLine, fileName),
-				Application.Current.MainWindow.Title,
-				MessageBoxButton.YesNo,
-				MessageBoxImage.Question) == MessageBoxResult.Yes)
-			{
-				using (Process process = Process.Start(fileName)) { }
-			}
+        public static void Generate_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            String fileName = e.Result.ToString();
 
-			AppState.Current.IsBusy = false;
-		}
-	}
+            AppState.Current.Status = "Done";
+
+            if (MessageBox.Show(Application.Current.MainWindow,
+                String.Format("Lyric document has been generated:{0}{0}{1}{0}{0}Do you want to open it?",
+                    Environment.NewLine, fileName),
+                Application.Current.MainWindow.Title,
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Question) == MessageBoxResult.Yes)
+            {
+                using (Process process = Process.Start(fileName)) { }
+            }
+
+            AppState.Current.IsBusy = false;
+        }
+    }
 }
