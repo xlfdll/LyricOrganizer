@@ -6,6 +6,10 @@ A simple lyric retrieval tool
        alt="Lyric Organizer">
 </p>
 
+Currently support lyric retrieval from the following sources:
+
+* J-Lyric.net
+
 ## System Requirements
 * .NET Framework 4.7.2
 
