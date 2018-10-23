@@ -24,4 +24,4 @@ Just run and type song name / artist / lyric keywords to search.
 * Visual Studio 2013+
 
 ## External Sources
-Search and music file icon are from [Modern UI Icons](http://modernuiicons.com/), which are licensed under [CC BY-ND 3.0](https://github.com/Templarian/WindowsIcons/blob/master/WindowsPhone/license.txt).
+Icons are from [Modern UI Icons](http://modernuiicons.com/), which are licensed under [CC BY-ND 3.0](https://github.com/Templarian/WindowsIcons/blob/master/WindowsPhone/license.txt).
