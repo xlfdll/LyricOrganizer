@@ -23,5 +23,7 @@ Just run and type song name / artist / lyric keywords to search.
 ## Development Prerequisites
 * Visual Studio 2013+
 
+Before the build, generate-build-number.sh needs to be executed in a Git / Bash shell to generate build information code file (BuildInfo.cs).
+
 ## External Sources
 Icons are from [Modern UI Icons](http://modernuiicons.com/), which are licensed under [CC BY-ND 3.0](https://github.com/Templarian/WindowsIcons/blob/master/WindowsPhone/license.txt).
