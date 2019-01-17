@@ -2,6 +2,8 @@
 using System.Runtime.InteropServices;
 using System.Windows;
 
+using Xlfdll;
+
 // アセンブリに関する一般情報は以下の属性セットをとおして制御されます。
 // アセンブリに関連付けられている情報を変更するには、
 // これらの属性値を変更してください。
@@ -30,12 +32,12 @@ using System.Windows;
 
 
 [assembly: ThemeInfo(
-	ResourceDictionaryLocation.None, //テーマ固有のリソース ディクショナリが置かれている場所
-									 //(リソースがページ、
-									 //またはアプリケーション リソース ディクショナリに見つからない場合に使用されます)
-	ResourceDictionaryLocation.SourceAssembly //汎用リソース ディクショナリが置かれている場所
-											  //(リソースがページ、
-											  //アプリケーション、またはいずれのテーマ固有のリソース ディクショナリにも見つからない場合に使用されます)
+    ResourceDictionaryLocation.None, //テーマ固有のリソース ディクショナリが置かれている場所
+                                     //(リソースがページ、
+                                     //またはアプリケーション リソース ディクショナリに見つからない場合に使用されます)
+    ResourceDictionaryLocation.SourceAssembly //汎用リソース ディクショナリが置かれている場所
+                                              //(リソースがページ、
+                                              //アプリケーション、またはいずれのテーマ固有のリソース ディクショナリにも見つからない場合に使用されます)
 )]
 
 
@@ -49,6 +51,6 @@ using System.Windows;
 // すべての値を指定するか、下のように '*' を使ってビルドおよびリビジョン番号を 
 // 既定値にすることができます:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.1.*")]
+[assembly: AssemblyVersion("1.1." + BuildInfo.Build)]
 
 [assembly: Guid("855c36f1-bd1f-4b6b-9226-4bd5b3f8ddf1")]
