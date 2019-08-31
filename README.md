@@ -11,7 +11,7 @@ Currently support lyric retrieval from the following sources:
 * J-Lyric.net
 
 ## System Requirements
-* .NET Framework 4.7.2
+* .NET Framework 4.8
 
 [Runtime configuration](https://docs.microsoft.com/en-us/dotnet/framework/migration-guide/how-to-configure-an-app-to-support-net-framework-4-or-4-5) is needed for running on other versions of .NET Framework.
 
@@ -21,7 +21,7 @@ Just run and type song name / artist / lyric keywords to search.
 **Generate Lyric Document** will save the lyrics to a text file.
 
 ## Development Prerequisites
-* Visual Studio 2013+
+* Visual Studio 2015+
 
 Before the build, generate-build-number.sh needs to be executed in a Git / Bash shell to generate build information code file (BuildInfo.cs).
 
