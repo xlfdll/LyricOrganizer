@@ -51,7 +51,7 @@ namespace LyricOrganizer
                 query.Add("p", page.ToString());
             }
 
-            String result = WebOperations.GetContentAsString(JLyricProvider.QueryURI.ToString(), Encoding.UTF8, query);
+            String result = WebOperations.GetContentAsString(JLyricProvider.QueryURI.ToString(), query, Encoding.UTF8);
 
             foreach (Match match in JLyricProvider.SearchParseRegex.Matches(result))
             {
