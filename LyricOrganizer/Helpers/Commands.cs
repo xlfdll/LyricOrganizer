@@ -4,6 +4,7 @@ using System.Diagnostics;
 
 using Microsoft.Win32;
 
+using Xlfdll.IO;
 using Xlfdll.Windows.Presentation;
 
 namespace LyricOrganizer
@@ -45,7 +46,7 @@ namespace LyricOrganizer
                 {
                     SaveFileDialog dlg = new SaveFileDialog()
                     {
-                        FileName = item.SongTitle,
+                        FileName = PathExtensions.GetSafeFileName($"{item.SongArtist} - {item.SongTitle}"),
                         Filter = "Text Document (*.txt)|*.txt|All Files (*.*)|*.*",
                         RestoreDirectory = true
                     };

@@ -75,6 +75,9 @@
     <Compile Include="..\XDLibrary\Xlfdll.Core\Infrastructure\ObservableObject.cs">
       <Link>Base\ObservableObject.cs</Link>
     </Compile>
+    <Compile Include="..\XDLibrary\Xlfdll.Core\IO\PathExtensions.cs">
+      <Link>Base\IO\PathExtensions.cs</Link>
+    </Compile>
     <Compile Include="..\XDLibrary\Xlfdll.Core\Network\WebOperations.cs">
       <Link>Base\Network\WebOperations.cs</Link>
     </Compile>
