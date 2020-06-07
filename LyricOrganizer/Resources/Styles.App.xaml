@@ -8,8 +8,13 @@
     </Style>
     <Style x:Key="ModernCommonButtonStyle" TargetType="Button" BasedOn="{StaticResource ModernButtonStyle}">
         <Setter Property="Margin" Value="5"/>
-        <Setter Property="Width" Value="100"/>
-        <Setter Property="Height" Value="30"/>
+        <Setter Property="Padding" Value="15,10"/>
+        <Setter Property="MinWidth" Value="100"/>
+    </Style>
+
+    <!-- ComboBox Styles -->
+    <Style TargetType="ComboBox">
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
     </Style>
 
     <!-- ListView Styles -->
