@@ -1,9 +1,9 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Diagnostics;
 
 using Microsoft.Win32;
 
+using Xlfdll.Diagnostics;
 using Xlfdll.IO;
 using Xlfdll.Windows.Presentation;
 
@@ -75,7 +75,7 @@ namespace LyricOrganizer
             (
                 delegate (LyricItem item)
                 {
-                    Process.Start(item.URI.ToString());
+                    ProcessHelper.Start(item.URI.ToString());
                 },
                 delegate (LyricItem item)
                 {

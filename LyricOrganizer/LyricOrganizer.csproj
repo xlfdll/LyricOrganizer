@@ -69,6 +69,9 @@
     <Compile Include="..\BuildInfo.cs">
       <Link>BuildInfo.cs</Link>
     </Compile>
+    <Compile Include="..\XDLibrary\Xlfdll.Core\Diagnostics\ProcessHelper.cs">
+      <Link>Base\Diagnostics\ProcessHelper.cs</Link>
+    </Compile>
     <Compile Include="..\XDLibrary\Xlfdll.Core\Infrastructure\Collections\EnumerableExtensions.cs">
       <Link>Base\EnumerableExtensions.cs</Link>
     </Compile>

@@ -5,6 +5,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Windows;
 
+using Xlfdll.Diagnostics;
+
 namespace LyricOrganizer
 {
     public static class Routines
@@ -115,7 +117,7 @@ namespace LyricOrganizer
                 MessageBoxButton.YesNo,
                 MessageBoxImage.Question) == MessageBoxResult.Yes)
             {
-                using (Process process = Process.Start(fileName)) { }
+                ProcessHelper.Start(fileName);
             }
 
             AppState.Current.IsBusy = false;
