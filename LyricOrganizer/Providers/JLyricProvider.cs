@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -19,7 +20,7 @@ namespace LyricOrganizer
 
         public ReadOnlyCollection<LyricItem> Search(String keyword, LyricSearchType type, Int32? page)
         {
-            List<LyricItem> results = new List<LyricItem>();
+            List<LyricItem> lyricItems = new List<LyricItem>();
 
             Dictionary<String, String> query = new Dictionary<String, String>();
 
@@ -51,18 +52,47 @@ namespace LyricOrganizer
                 query.Add("p", page.ToString());
             }
 
-            String result = WebOperations.GetContentAsString(JLyricProvider.QueryURI.ToString(), query, Encoding.UTF8);
+            List<dynamic> results = new List<dynamic>();
+            String html = WebOperations.GetContentAsString(JLyricProvider.QueryURI.ToString(), query, Encoding.UTF8);
 
-            foreach (Match match in JLyricProvider.SearchParseRegex.Matches(result))
+            if (type == LyricSearchType.ByArtist)
             {
-                String songName = match.Groups["SongTitle"].Value;
-                String songArtist = match.Groups["SongArtist"].Value;
-                Uri uri = new Uri(JLyricProvider.QueryURI.GetLeftPart(UriPartial.Authority) + match.Groups["RelativePath"].Value);
+                foreach (Match match in JLyricProvider.ArtistSearchParseRegex.Matches(html))
+                {
+                    html = WebOperations.GetContentAsString(match.Groups["ArtistURL"].Value, Encoding.UTF8);
 
-                results.Add(new LyricItem(songName, songArtist, this, uri));
+                    results.AddRange(JLyricProvider.ArtistSongSearchParseRegex.Matches(html)
+                        .OfType<Match>()
+                        .Select(m => new
+                        {
+                            Title = m.Groups["SongTitle"].Value,
+                            Artist = match.Groups["ArtistName"].Value,
+                            URL = JLyricProvider.RootURI.GetLeftPart(UriPartial.Authority) + match.Groups["SongRelativeURL"].Value
+                        }));
+                }
+            }
+            else
+            {
+                results.AddRange(JLyricProvider.SongSearchParseRegex.Matches(html)
+                    .OfType<Match>()
+                    .Select(m => new
+                    {
+                        Title = m.Groups["SongTitle"].Value,
+                        Artist = m.Groups["SongArtist"].Value,
+                        URL = m.Groups["SongURL"].Value
+                    }));
             }
 
-            return results.AsReadOnly();
+            foreach (dynamic r in results)
+            {
+                String songName = r.Title;
+                String songArtist = r.Artist;
+                Uri uri = new Uri(r.URL);
+
+                lyricItems.Add(new LyricItem(songName, songArtist, this, uri));
+            }
+
+            return lyricItems.AsReadOnly();
         }
 
         public LyricContent Retrieve(LyricItem item)
@@ -85,8 +115,11 @@ namespace LyricOrganizer
             return new LyricContent(title, artist, writer, composer, lyric, item);
         }
 
-        private static readonly Uri QueryURI = new Uri("http://j-lyric.net/index.php");
-        private static readonly Regex SearchParseRegex = new Regex(@"<div class='title'>\s*<a href='(?<RelativePath>.+)'>(?<SongTitle>.+)</a></div>\s*<div class='status'>\s*.+<a href='.+'>(?<SongArtist>.+)</a>", RegexOptions.Compiled);
+        private static readonly Uri RootURI = new Uri("http://j-lyric.net");
+        private static readonly Uri QueryURI = new Uri("http://search.j-lyric.net/index.php");
+        private static readonly Regex SongSearchParseRegex = new Regex(@"<p class=""mid""><a href=""(?<SongURL>.+?)"" title.+?>(?<SongTitle>.+?)</a></p><p class=""sml"">歌：<a href="".+?"" title.+?>(?<SongArtist>.+?)</a></p>", RegexOptions.Compiled);
+        private static readonly Regex ArtistSearchParseRegex = new Regex(@"<a class=""artist"" href=""(?<ArtistURL>.+?)"" title.+?>(?<ArtistName>.+?)</a>", RegexOptions.Compiled);
+        private static readonly Regex ArtistSongSearchParseRegex = new Regex(@"<p class=""ttl""><a href=""(?<SongRelativeURL>.+?)"" title.+?>(?<SongTitle>.+?)</a></p>", RegexOptions.Compiled);
         private static readonly Regex LyricParseRegex = new Regex(@"</p><p class=""sml"">(?<Writer>.+)</p><p class=""sml"">(?<Composer>.+)</p><p id=""Lyric"">(?<Lyric>.+?)</p>", RegexOptions.Compiled);
     }
 }
